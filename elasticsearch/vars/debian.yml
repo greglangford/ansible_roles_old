@@ -1,0 +1,27 @@
+###################################################################################################
+
+elasticsearch_pgp_key   : https://artifacts.elastic.co/GPG-KEY-elasticsearch
+elasticsearch_apt_repo  : deb https://artifacts.elastic.co/packages/6.x/apt stable main
+
+###################################################################################################
+
+elasticsearch_dependencies:
+  - openjdk-8-jdk
+
+###################################################################################################
+
+elasticsearch_package_name: elasticsearch
+elasticsearch_service_name: '{{ elasticsearch_package_name }}'
+
+###################################################################################################
+
+elasticsearch_user  : elasticsearch
+elasticsearch_group : elasticsearch
+
+###################################################################################################
+
+elasticsearch_config_path : /etc/elasticsearch
+elasticsearch_data_path   : /var/lib/elasticsearch
+elasticsearch_log_path    : /var/log/elasticsearch
+
+###################################################################################################

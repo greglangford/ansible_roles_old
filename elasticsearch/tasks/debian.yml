@@ -1,0 +1,80 @@
+###################################################################################################
+
+- name: debian | vars
+  when: ansible_os_family | lower == 'debian'
+  include_vars: debian.yml
+
+###################################################################################################
+
+- name: debian | key
+  apt_key:
+    url   : '{{ elasticsearch_pgp_key }}'
+    state : present
+
+###################################################################################################
+
+- name: debian | repository
+  apt_repository:
+    repo  : '{{ elasticsearch_apt_repo }}'
+    state : present
+
+###################################################################################################
+
+- name: debian | dependencies
+  apt:
+    name  : '{{ item }}'
+    state : latest
+  with_items: '{{ elasticsearch_dependencies }}'
+
+###################################################################################################
+
+- name: debian | package
+  apt:
+    name  : '{{ elasticsearch_package_name }}'
+    state : latest
+
+###################################################################################################
+
+- name: debian | elasticsearch.yml
+  template:
+    src   : elasticsearch.yml.j2
+    dest  : '{{ elasticsearch_config_path }}/elasticsearch.yml'
+    owner : root
+    group : '{{ elasticsearch_group }}'
+    mode  : '0660'
+  notify:
+    - restart elasticsearch
+
+###################################################################################################
+
+- name: debian | jvm.options
+  template:
+    src   : jvm.options.j2
+    dest  : '{{ elasticsearch_config_path }}/jvm.options.j2'
+    owner : root
+    group : '{{ elasticsearch_group }}'
+    mode  : '0660'
+  notify:
+    - restart elasticsearch
+
+###################################################################################################
+
+- name: debian | log4j2.properties
+  template:
+    src   : log4j2.properties.j2
+    dest  : '{{ elasticsearch_config_path }}/log4j2.properties.j2'
+    owner : root
+    group : '{{ elasticsearch_group }}'
+    mode  : '0660'
+  notify:
+    - restart elasticsearch
+
+###################################################################################################
+
+- name: debian | service
+  service:
+    name    : '{{ elasticsearch_service_name }}'
+    state   : started
+    enabled : yes
+
+###################################################################################################
